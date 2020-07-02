@@ -8,7 +8,18 @@ the widget alow you :
 3. nice value tick display with the same position thet look great!
 4. you can control the x value: date or value  
 5. as the widget resize the tick adjust to the axes position.
+6. adjust the ydata data to show the ylim of the selected data  
+
+
 ![alt-text](AxesMove.gif)
+
+# RangeliderAxes
+the widget alow you :
+1. control the xlim postion 
+2. select the interval xlim with nice slider 
+3. adjust the ydata data to show the ylim of the selected data  
+
+![alt-text](RangeliderAxes.gif)
 
 made by oren berkovitch 2020 
 orenber@hotmail.com
