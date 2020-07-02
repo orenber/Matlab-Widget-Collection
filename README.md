@@ -13,13 +13,13 @@ the widget alow you :
 
 ![alt-text](AxesMove.gif)
 
-# RangeliderAxes
+# RangeSliderAxes
 the widget alow you :
 1. control the xlim postion 
 2. select the interval xlim with nice slider 
 3. adjust the ydata data to show the ylim of the selected data  
 
-![alt-text](RangeliderAxes.gif)
+![alt-text](RangSliderAxes.gif)
 
 made by oren berkovitch 2020 
 orenber@hotmail.com
