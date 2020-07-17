@@ -1,3 +1,4 @@
+
 classdef AxesMove < handle
     %AXESPLAY Summary of this class goes here
     %   Detailed explanation goes here
@@ -38,7 +39,7 @@ classdef AxesMove < handle
                     'WindowMousePress',@obj.start);
                 obj.listener_x_axes = addlistener( obj.Axes,...
                     'XLim','PostSet',@obj.xAxesChange);
-                    obj.listener_y_axes = addlistener( obj.Axes,...
+                obj.listener_y_axes = addlistener( obj.Axes,...
                     'YLim','PostSet',@obj.yAxesChange);
                 obj.listener_axes_SizeChanged = addlistener(obj.Axes,...
                     'SizeChanged',@obj.sizeChanged);
@@ -55,13 +56,23 @@ classdef AxesMove < handle
         
         function sizeChanged(obj,event,~)
             
-            pos = round(getPosition(obj.Axes,'cen'));
-           
-                
-                obj.xTickSum =  pos(3)/1.7;
-                obj.yTickSum =  pos(4);
-                obj.axesChange(event)
-           
+            pos = round(obj.getPosition(obj.Axes,'cen'));
+            
+            
+            obj.xTickSum =  pos(3)/(0.2*obj.Axes.FontSize);
+            obj.yTickSum =  pos(4);
+            obj.axesChange(event)
+            
+        end
+        function position = getPosition(obj,handleObject ,convertUnits)
+            
+            originalUnit = get(handleObject,'Units');
+            set(handleObject,'Units',convertUnits)
+            
+            position =  get(handleObject,'Position');
+            % return to original units
+            set(handleObject,'Units',originalUnit)
+            
         end
         function axesChange(obj,event,~)
             yAxesChange(obj,event)
@@ -101,8 +112,8 @@ classdef AxesMove < handle
             if  obj.inRange(newXRange)
                 xlim(obj.Axes,newXRange)
                 if ~isempty(obj.ydata_high)
-                yRange = obj.getYlim(newXRange);
-                ylim(obj.Axes,yRange)
+                    yRange = obj.getYlim(newXRange);
+                    ylim(obj.Axes,yRange)
                 end
             end
         end
@@ -143,18 +154,17 @@ classdef AxesMove < handle
             yrange(2) = ylimRange(2) + extra;
         end
         
-        function isInAxes = checkIfMouseIsInAxesArea(obj)
-               yboundry = ylim(obj.Axes);
+        function isInAxes =  isMouseInAxesArea(obj,~,~)
+                 yboundry = ylim(obj.Axes);
             xboundry = xlim(obj.Axes);
             
             inXaxes = xboundry(1)<=obj.Axes.CurrentPoint(1,1)&&...
                 obj.Axes.CurrentPoint(1,1)<=xboundry(2);
+            
             inYaxes = yboundry(1)<=obj.Axes.CurrentPoint(1,2)&&...
                 obj.Axes.CurrentPoint(1,2)<=yboundry(2);
             isInAxes = inXaxes&&inYaxes;
-            
         end
-        
         
     end
     
@@ -166,17 +176,18 @@ classdef AxesMove < handle
         %% mouse
         function WindowMousePress(obj,h,e)
             
-            isInAxes = obj.checkIfMouseIsInAxesArea();
+            
+       isInAxes =  obj.isMouseInAxesArea();
+            
             if isInAxes
                 set(obj.Figure,'WindowButtonUpFcn',@obj.WindowMouseRelease);
                 set(obj.Figure,'WindowButtonMotionFcn',@obj.WindowMouseMotion);
-                
                 currentPoint = get(obj.Axes,'CurrentPoint');
                 obj.startPoint.x = currentPoint(1,1);
                 obj.startPoint.y = currentPoint(1,2);
             end
+            
         end
-        
         
         function WindowMouseRelease(obj,h,e)
             
@@ -188,10 +199,9 @@ classdef AxesMove < handle
             
             
             currentPoint = get(obj.Axes,'CurrentPoint');
-            obj.endPoint.x = currentPoint(1,1);
-            %obj.endPoint.y = currentPoint(1,2);
-        
-            steps = obj.startPoint.x-obj.endPoint.x ;
+            
+            
+            steps = obj.startPoint.x-currentPoint(1,1) ;
             obj.move(steps)
             
         end
@@ -219,4 +229,3 @@ classdef AxesMove < handle
     end
     
 end
-
